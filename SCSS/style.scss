@@ -1,0 +1,132 @@
+@import "reset";
+
+// 變數
+$width: 100%;
+$buttonNumber: 6;
+
+// 變數 + 函式
+$baseLineHeight: 10px;
+
+// 繼承
+%aButton {
+    display: block;
+    text-decoration: none;
+}
+
+// 函式
+@function line($count: 1) {
+    // 1是預設值，呼叫不傳值就是1
+    @return $baseLineHeight * $count;
+}
+
+.aa {
+    padding: line(2); // 函式
+    // padding: 20px;
+}
+
+@function line($count: 1, $baseLineHeight: 10px) {
+    // 1是預設值，呼叫不傳值就是1
+    @return $baseLineHeight * $count;
+}
+
+.bb {
+    padding: line(3, 12px); // 函式
+    // padding: 30px;
+}
+
+// Alex字體大小與行高
+$baseSize: 12px;
+$baseLineSize: 10px;
+$sizeLevel: 4px;
+$paddingLevel: 1.2;
+
+@function font($level: 0) {
+    @if $level < 0 {
+        $level: 0;
+    }
+
+    @return $baseSize +$sizeLevel * round($level); // round 四捨五入
+    // 12px + 4px * 1
+}
+
+.cc {
+    padding: font(5);
+}
+
+@function rhythm($size) {
+    @return ceil($size * $paddingLevel / $baseLineSize) * $baseLineSize; // ceil 無條件進位成整數
+    // ceil(16px * 1.2 / 10px) * 10
+}
+
+.dd {
+    padding: font(5);
+    line-height: rhythm(font(5));
+}
+
+// mixin
+@mixin font($level: 1, $line-height: auto) {
+    $size: font($level); // 16px
+    $line: rhythm($size); // 20px
+
+    font-size: $size;
+
+    @if $line-height ==auto or $line-height < $line {
+        line-height: $line;
+    }
+
+    @else {
+        line-height: $line-height;
+    }
+}
+
+@mixin aButton() {
+    text-decoration: none;
+    display: block;
+}
+
+.ee {
+    @include aButton();
+    @include font(2);
+}
+
+.ff {
+    @include aButton();
+    @include font(4);
+}
+
+// HTML
+
+html {
+    margin: 0;
+    padding: 0;
+}
+
+.tabList {
+    >header {
+        >ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-size: 0px;
+        }
+
+        li {
+            display: inline-block;
+            width: $width / $buttonNumber; // 變數
+            // width: calc(100% / 6);
+            font-size: 16px;
+
+            >a {
+                @extend %aButton; // 繼承
+                width: 100%;
+                height: 20px;
+                @include font(1);
+                line-height: 40px;
+            }
+        }
+    }
+
+    >div {
+        color: red;
+    }
+}
